@@ -1,0 +1,9 @@
+<launch>
+    <arg name="room_order" default="[]" />
+
+    <node pkg="turtlebot3_cleaner" type="qr_reader.py" name="qr_reader" output="screen" />
+
+    <node pkg="turtlebot3_cleaner" type="task_manager.py" name="task_manager" output="screen">
+        <param name="~room_order" value="$(arg room_order)" />
+    </node>
+</launch>
