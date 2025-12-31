@@ -15,11 +15,8 @@ The robot navigates through rooms, reads QR codes to identify each room, and per
 ---
 
 ## Prerequisites
-### Ubuntu 
 - Ubuntu 20.04
-### ROS
 - ROS Noetic.
-### Gazebo 
 - Gazebo 11
 
 ### ROS Packages
@@ -30,7 +27,8 @@ Ensure the following packages are installed:
 - `turtlebot3_teleop`
 - `turtlebot3_slam`
 - `opencv`
-
+## Turtlebot3 Model
+- Please make sure you have the Waffle model before starting
 ---
 
 ## Installation
@@ -42,38 +40,51 @@ git clone https://github.com/aithusa13/turtlebot3_cleaner.git
 cd ~/catkin_ws
 catkin_make
 source devel/setup.bash
-
+```
 Usage
+* Make sure to always launch in this order: gazebo -> rviz -> script files
 1. Launch Gazebo with the custom house world
+```bash
   roslaunch turtlebot3_cleaner my_house.launch
-
+```
 2. Launch SLAM with RViz
+```bash
   roslaunch turtlebot3_cleaner slam.launch slam_methods:=gmapping
-
+```
 3. Save the map
 In another terminal, while SLAM terminal is running:
+```bash
   rosrun map_server map_saver -f $(rospack find turtlebot3_cleaner)/maps/map
-* If you plan to use the map included in the repository, make sure to update the file path inside map.yaml
+```
+* Skip steps 2 and 3 if you will use the map included in the repository.
+* Do not forget to change the path in map.yaml with your file's path
 
 4. Launch Navigation with the saved map
+```bash
   roslaunch turtlebot3_cleaner nav.launch
-
-Or to open a specific map:
+```
+* Or to open a specific map:
+```bash
   roslaunch turtlebot3_cleaner nav.launch map_file:=$(rospack find turtlebot3_cleaner)/maps/map.yaml
-
+```
 5. Launch the cleaner nodes
-This launch file starts both the QR reader and task manager nodes simultaneously:
+* This launch file starts both the QR reader and task manager nodes simultaneously:
+```bash
   roslaunch turtlebot3_cleaner cleaner.launch room_order:="['LIVINGROOM','CORRIDOR','BEDROOM','GUESTROOM']"
+```
 * A small camera window will open 
 * The room_order parameter defines the order in which the robot visits rooms.
 * Leave it blank to use the default order: 'LIVINGROOM','BEDROOM','KITCHEN','CORRIDOR','GUESTROOM'.
+
 * Waypoints can be edited in the yaml configuration file.
-  To determine waypoint coordinates in RViz:
-  Use the Publish Point tool
-  Run:
+  - To determine waypoint coordinates in RViz:
+  - Use the Publish Point tool
+  - After you click a point, run:
+  ```bash
     rostopic echo /clicked_point
+  ```
   This will output the (x, y) coordinates.
   You can adjust the yaw angle to observe how the robot’s orientation changes:
   (0.0 faces +x, 3.14/−3.14 faces −x, 1.57 faces +y, −1.57 faces −y).
 
-The robot will generate a cleaning report in the package root after completing tasks.
+* The robot will generate a cleaning report in the package root after completing tasks.
